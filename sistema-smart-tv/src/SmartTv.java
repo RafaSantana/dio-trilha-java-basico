@@ -5,7 +5,7 @@ public class SmartTv {
 
     public void mudarCanal(int canalEscolhido) {
         if((canalEscolhido <= 0) || (canalEscolhido > 50)) {
-            canalEscolhido = 1;
+            canal = 1;           
             System.out.println("Canal Inválido, tente outro...");
         }else {
             canal = canalEscolhido;
@@ -33,8 +33,8 @@ public class SmartTv {
     }
 
     public void aumentarVolume() {
-        if(volume >= 50) {
-            volume = 50;
+        if(volume >= 100) {
+            volume = 100;
             System.out.println("Volume está no máximo");
         }else {
             volume++;
