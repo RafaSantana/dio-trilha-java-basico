@@ -4,7 +4,7 @@ import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ControleCandidatos {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         List<Candidato> candidatos = new ArrayList<>();
         Scanner sc = new Scanner(System.in);
         System.out.println("Quantos candidatos serão chamados para entrevista? ");
@@ -22,23 +22,28 @@ public class ControleCandidatos {
         candidatos.add(new Candidato("DANIELA"));
         candidatos.add(new Candidato("JORGE"));
 
+        EscolhaCandidatos.avaliarPretensaoSalario(candidatos);
+        System.out.println("\nCANDIDATOS SELECIONADOS PARA ENTREVISTA: ");
         EscolhaCandidatos.selecionarCandidatos(candidatos, quantidadeEntrevistados);
 
     }
 
     class EscolhaCandidatos {
+        EscolhaCandidatos() {
+        }
+
         static final Double SALARIOBASE = 2000.00;
 
         static void selecionarCandidatos(List<Candidato> candidatos, Integer quantidadeEntrevistados) {
             Integer contCandidatosAprovados = 0;
 
             for (Candidato candidato : candidatos) {
-                if (candidato.getSalarioPretendido() <= SALARIOBASE) {
-                    System.out.println("Candidato " + candidato.getNomeCandidato() + " Qualificado"
-                            + candidato.getSalarioPretendido());
-                    contCandidatosAprovados++;
-                    if (contCandidatosAprovados.equals(quantidadeEntrevistados)) {
-                        break;
+                if (contCandidatosAprovados.equals(quantidadeEntrevistados)) {
+                    break;
+                } else {
+                    if (candidato.getSalarioPretendido() <= SALARIOBASE) {
+                        ligarCandidato(candidato);
+                        contCandidatosAprovados++;
                     }
                 }
             }
@@ -46,16 +51,48 @@ public class ControleCandidatos {
         }
 
         static void avaliarPretensaoSalario(List<Candidato> candidatos) {
+            String mensagem = "";
 
             for (Candidato candidato : candidatos) {
                 if (candidato.getSalarioPretendido() < SALARIOBASE) {
-                    System.out.println("LIGAR PARA O CANDIDATO");
+                    mensagem = "LIGAR PARA O CANDIDATO";
                 } else if (candidato.getSalarioPretendido().equals(SALARIOBASE)) {
-                    System.out.println("LIGAR PARA O CANDIDATO, COM CONTRA PROPOSTA");
+                    mensagem = "LIGAR PARA O CANDIDATO, COM CONTRA PROPOSTA";
                 } else {
-                    System.out.println("AGUARDANDO RESULTADO DOS DEMAIS CANDIDATOS");
+                    mensagem = "AGUARDANDO RESULTADO DOS DEMAIS CANDIDATOS";
                 }
+                System.out.println("CANDIDATO " + candidato.getNomeCandidato() + ", " + mensagem);
             }
+
+        }
+
+        static void ligarCandidato(Candidato candidato) {
+            System.out.println("\nLIGANDO PARA O CANDIDATO " + candidato.getNomeCandidato() + "...");
+
+            Boolean atender = ThreadLocalRandom.current().nextInt(3) == 1;
+
+            Integer tentativasRealizadas = 1;
+            boolean continuarTentando = true;
+            boolean atendeu = false;
+
+            do {
+                atendeu = atender;
+                continuarTentando = !atendeu;
+                if (continuarTentando)
+                    tentativasRealizadas++;
+                else
+                    System.out.println("CONTATO REALIZADO COM SUCESSO");
+
+            } while ((continuarTentando) && (tentativasRealizadas < 3));
+
+            if (atendeu)
+                System.out
+                        .println("CONSEGUIMOS CONTATO COM " + candidato.getNomeCandidato() + " NA "
+                                + tentativasRealizadas + " TENTATIVA");
+            else
+                System.out.println(
+                        "NÃO CONSEGUIMOS CONTATO COM " + candidato.getNomeCandidato() + ", NÚMERO MAXIMO TENTATIVAS "
+                                + tentativasRealizadas + " REALIZADA");
 
         }
     }
